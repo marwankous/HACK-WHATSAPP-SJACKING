@@ -8,6 +8,8 @@ from core.color import *
 from core.module_utils import *
 from core import Settings
 from pathlib2 import Path
+from selenium.webdriver.firefox.service import Service
+from selenium import webdriver
 import os, pickle, json, time, threading, functools, traceback, subprocess
 from stat import S_IRUSR, S_IWUSR, S_IXUSR, S_IRGRP, S_IWGRP, S_IXGRP, S_IROTH, S_IWOTH, S_IXOTH
 
@@ -73,9 +75,11 @@ class headless_browsers:
             # caps['marionette'] = False
             caps['binary_location'] = self.browser_path
             if Settings.debug:
-                new_headless[module_name]["Controller"] = Firefox(profile, executable_path="/usr/local/share/geckodriver", capabilities=caps)#options=self.opts) # Inserting the browser object
+                service = Service(executable_path="/usr/local/share/geckodriver")
+                new_headless[module_name]["Controller"] = webdriver.Firefox(service=service, options=self.opts)
             else:
-                new_headless[module_name]["Controller"] = Firefox(profile, executable_path="/usr/local/share/geckodriver", capabilities=caps, options=self.opts) # Inserting the browser object
+                service = Service(executable_path="/usr/local/share/geckodriver")
+                new_headless[module_name]["Controller"] = webdriver.Firefox(service=service, options=self.opts, capabilities=caps) # Inserting the browser object
         except Exception as e:
             if Settings.debug:
                 print(" Exception: "+str(e))
